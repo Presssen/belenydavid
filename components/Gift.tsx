@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { SectionId } from '../types';
 import { Gift as GiftIcon, Copy, Check } from 'lucide-react';
 
-export const Gift: React.FC = () => {
+interface GiftProps {
+  guestName?: string;
+}
+
+export const Gift: React.FC<GiftProps> = ({ guestName }) => {
   const [copied, setCopied] = useState(false);
   const [randomImage, setRandomImage] = useState<string>("");
   const iban = "ES00 0000 0000 0000 0000 0000"; // Placeholder
@@ -40,7 +44,7 @@ export const Gift: React.FC = () => {
         </h2>
         
         <p className="text-wedding-700 leading-relaxed mb-8 font-light italic">
-          "Para nosotros, vuestra presencia es el mejor regalo. <br/>
+          "Para nosotros{guestName ? `, ${guestName}` : ''}, vuestra presencia es el mejor regalo. <br/>
           No obstante, si deseáis tener un detalle con nosotros, os dejamos nuestro número de cuenta."
         </p>
 

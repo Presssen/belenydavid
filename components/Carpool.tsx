@@ -8,7 +8,11 @@ import { Car, User, MapPin, Clock, Plus, Search, Loader2, AlertCircle } from 'lu
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPQaPaw3_YNpLCkhX66YNhuKmcJyXdqZQ9Ksk-ibsw7jctIYei5tXCYkKwXABgOqsH/exec"; 
 // ============================================================================
 
-export const Carpool: React.FC = () => {
+interface CarpoolProps {
+  guestName?: string;
+}
+
+export const Carpool: React.FC<CarpoolProps> = ({ guestName }) => {
   const [activeTab, setActiveTab] = useState<'find' | 'offer'>('find');
   const [rides, setRides] = useState<Ride[]>([]);
   const [loading, setLoading] = useState(false);
@@ -16,7 +20,7 @@ export const Carpool: React.FC = () => {
   
   // Form State
   const [formData, setFormData] = useState({
-    name: '',
+    name: guestName || '', // Auto-fill name if available
     contact: '',
     origin: '',
     date: '2026-09-19',
@@ -29,6 +33,13 @@ export const Carpool: React.FC = () => {
   useEffect(() => {
     fetchRides();
   }, []);
+
+  // Update form name if guestName prop changes (e.g. if arriving late)
+  useEffect(() => {
+    if (guestName && !formData.name) {
+      setFormData(prev => ({ ...prev, name: guestName }));
+    }
+  }, [guestName]);
 
   const fetchRides = async () => {
     setLoading(true);
@@ -105,11 +116,9 @@ export const Carpool: React.FC = () => {
         await new Promise(r => setTimeout(r, 800));
       }
       
-      setFormData({ ...formData, name: '', contact: '', origin: '', note: '' });
+      // Clear form but keep name
+      setFormData({ ...formData, contact: '', origin: '', note: '' });
       alert(activeTab === 'offer' ? "¡Viaje publicado con éxito!" : "¡Solicitud publicada con éxito!");
-      
-      // Opcional: Cambiar de pestaña para ver tu publicación si publicaste oferta
-      // if (activeTab === 'offer') setActiveTab('find');
       
     } catch (error) {
       console.error(error);

@@ -2,14 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { X, CalendarClock, ChevronRight } from 'lucide-react';
 import { SectionId } from '../types';
 
-export const WelcomeModal: React.FC = () => {
+interface WelcomeModalProps {
+  guestName?: string;
+}
+
+export const WelcomeModal: React.FC<WelcomeModalProps> = ({ guestName }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // Small delay to appear after load
+    // Small delay to appear after load (and after name entry animation)
     const timer = setTimeout(() => {
       setIsOpen(true);
-    }, 1000);
+    }, 1500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -53,7 +57,7 @@ export const WelcomeModal: React.FC = () => {
           </div>
 
           <h3 className="font-serif text-2xl text-wedding-900 mb-3">
-            ¡Importante!
+            {guestName ? `¡Hola ${guestName}!` : '¡Importante!'}
           </h3>
           
           <p className="text-wedding-600 mb-6 leading-relaxed">

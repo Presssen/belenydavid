@@ -2,7 +2,11 @@ import React from 'react';
 import { SectionId } from '../types';
 import { ChevronDown } from 'lucide-react';
 
-export const Hero: React.FC = () => {
+interface HeroProps {
+  guestName?: string;
+}
+
+export const Hero: React.FC<HeroProps> = ({ guestName }) => {
   const imageUrl = "https://cdn.shopify.com/s/files/1/0370/2466/1636/files/Boda.jpg?v=1768409111";
 
   return (
@@ -36,7 +40,7 @@ export const Hero: React.FC = () => {
       {/* Content */}
       <div className="relative z-10 text-center text-white px-4 animate-fade-in-up flex flex-col items-center max-w-4xl mx-auto">
         <p className="font-sans text-sm md:text-lg tracking-[0.2em] uppercase mb-6 opacity-95 drop-shadow-md">
-          Nos casamos
+          {guestName ? `Hola ${guestName}, nos casamos` : 'Nos casamos'}
         </p>
         <h1 className="font-script text-7xl md:text-9xl mb-8 drop-shadow-lg text-white">
           Belén <span className="text-white/90">&</span> David
