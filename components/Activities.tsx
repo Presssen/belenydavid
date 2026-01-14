@@ -32,13 +32,13 @@ export const Activities: React.FC = () => {
       title: "Castillo de Santiago",
       description: "Fortaleza del siglo XV. Ofrece visitas guiadas y unas vistas panorámicas increíbles de la ciudad y el río.",
       icon: <Castle className="w-5 h-5" />,
-      image: "https://images.unsplash.com/photo-1628108422332-95f00a400986?auto=format&fit=crop&q=80&w=600"
+      image: "https://cdn.shopify.com/s/files/1/0370/2466/1636/files/castillo-sirena.jpg?v=1768431216"
     },
     {
       title: "Parque Nacional de Doñana",
       description: "Cruza el río en la barcaza y explora una de las reservas naturales más importantes de Europa en 4x4.",
       icon: <TreePine className="w-5 h-5" />,
-      image: "https://images.unsplash.com/photo-1549487532-6a84f3df9114?auto=format&fit=crop&q=80&w=600"
+      image: "https://cdn.shopify.com/s/files/1/0370/2466/1636/files/flamencos-pn-donana-s316829864.avif?v=1768431263"
     },
     {
       title: "Mercado de Abastos",
@@ -67,12 +67,12 @@ export const Activities: React.FC = () => {
 
         {/* Horizontal Scroll Container */}
         <div className="relative w-full group/container">
-            {/* Gradient masks for smooth edges visual effect */}
-            <div className="absolute left-0 top-0 bottom-0 w-8 md:w-24 bg-gradient-to-r from-wedding-100 to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-8 md:w-24 bg-gradient-to-l from-wedding-100 to-transparent z-10 pointer-events-none" />
+            {/* Gradient masks */}
+            <div className="absolute left-0 top-0 bottom-0 w-6 md:w-24 bg-gradient-to-r from-wedding-100 to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-6 md:w-24 bg-gradient-to-l from-wedding-100 to-transparent z-10 pointer-events-none" />
 
             <div 
-              className="flex gap-5 md:gap-8 overflow-x-auto pb-12 pt-4 px-6 md:px-12 snap-x snap-mandatory scrollbar-hide"
+              className="flex gap-4 md:gap-6 overflow-x-auto pb-12 pt-4 px-8 md:px-12 snap-x snap-mandatory scrollbar-hide"
               style={{ 
                 scrollbarWidth: 'none', 
                 msOverflowStyle: 'none',
@@ -89,20 +89,22 @@ export const Activities: React.FC = () => {
               {activities.map((activity, index) => (
                 <div 
                   key={index} 
-                  className="min-w-[280px] md:min-w-[340px] flex-none snap-center bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group select-none hover:-translate-y-1"
+                  className="w-60 md:w-72 flex-none snap-center bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group select-none hover:-translate-y-1 flex flex-col"
                 >
-                  <div className="h-56 overflow-hidden relative">
+                  <div className="h-80 md:h-96 overflow-hidden relative">
                     <img 
                       src={activity.image} 
                       alt={activity.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
-                    <div className="absolute top-4 right-4 bg-white/90 p-2.5 rounded-full text-wedding-800 shadow-sm backdrop-blur-sm">
+                    <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent opacity-60" />
+                    <div className="absolute top-4 right-4 bg-white/90 p-2.5 rounded-full text-wedding-800 shadow-sm backdrop-blur-sm z-10">
                       {activity.icon}
                     </div>
                   </div>
-                  <div className="p-6">
-                    <h3 className="font-serif text-xl text-wedding-900 mb-3 group-hover:text-accent transition-colors">{activity.title}</h3>
+                  <div className="p-6 flex-1 flex flex-col relative">
+                    {/* Negative margin to pull text up slightly over image if desired, or just clean layout */}
+                    <h3 className="font-serif text-xl text-wedding-900 mb-3 group-hover:text-accent transition-colors leading-tight">{activity.title}</h3>
                     <p className="text-wedding-600 text-sm leading-relaxed">
                       {activity.description}
                     </p>
@@ -111,7 +113,7 @@ export const Activities: React.FC = () => {
               ))}
               
               {/* Spacer for right padding visual balance */}
-              <div className="min-w-[1rem] flex-none" />
+              <div className="w-4 md:w-12 flex-none" />
             </div>
         </div>
         
