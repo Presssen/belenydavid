@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SectionId } from '../types';
 import { hotels } from '../data/hotels';
 import { HotelCard } from './HotelCard';
-import { ExternalLink, Home } from 'lucide-react';
+import { ExternalLink, Home, ChevronDown } from 'lucide-react';
 
 export const Accommodation: React.FC = () => {
+  const [showAll, setShowAll] = useState(false);
+  
+  // Mostrar solo los primeros 4 si no se ha pulsado "Ver más"
+  const displayedHotels = showAll ? hotels : hotels.slice(0, 4);
+
   return (
     <section id={SectionId.HOTELS} className="py-24 px-4 bg-white">
       <div className="max-w-7xl mx-auto">
@@ -47,13 +52,29 @@ export const Accommodation: React.FC = () => {
 
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {hotels.map((hotel) => (
+          {displayedHotels.map((hotel) => (
             <HotelCard key={hotel.id} hotel={hotel} />
           ))}
         </div>
 
+        {/* Botón Ver Más */}
+        {!showAll && hotels.length > 4 && (
+          <div className="mt-12 text-center animate-fade-in-up">
+            <button
+              onClick={() => setShowAll(true)}
+              className="group inline-flex items-center gap-2 px-8 py-3 bg-white border border-wedding-300 text-wedding-800 rounded-full text-sm font-semibold hover:bg-wedding-50 hover:border-wedding-400 transition-all shadow-sm hover:shadow-md"
+            >
+              Ver más alojamientos
+              <span className="text-xs bg-wedding-100 px-2 py-0.5 rounded-full text-wedding-600 group-hover:bg-wedding-200 transition-colors">
+                +{hotels.length - 4}
+              </span>
+              <ChevronDown size={16} className="text-wedding-400 group-hover:text-wedding-600 transition-colors" />
+            </button>
+          </div>
+        )}
+
         {/* Footer Note */}
-        <div className="mt-16 text-center">
+        <div className={`text-center transition-all duration-500 ${showAll ? 'mt-16' : 'mt-8'}`}>
           <a 
             href="https://www.google.com/maps/search/hoteles+en+Sanlúcar+de+Barrameda" 
             target="_blank" 

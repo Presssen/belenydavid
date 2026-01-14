@@ -1,19 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Ride } from '../types';
-import { Car, User, MapPin, Calendar, Clock, Plus, Search, Loader2, AlertCircle } from 'lucide-react';
+import { Car, User, MapPin, Clock, Plus, Search, Loader2, AlertCircle } from 'lucide-react';
 
 // ============================================================================
 // ⚙️ CONFIGURACIÓN GOOGLE SHEETS
 // ============================================================================
-// 1. Crea un Google Sheet con estos encabezados en la fila 1:
-//    id, driverName, contact, origin, destination, date, time, seatsAvailable, type, note, timestamp
-// 2. Ve a Extensiones > Apps Script y pega el código del servidor (ver abajo del todo de este archivo).
-// 3. Publicar > Nueva implementación > Tipo: Web App > Acceso: CUALQUIER PERSONA (Anyone).
-// 4. Copia la URL que te dan y pégala aquí abajo entre las comillas:
-// ============================================================================
-
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyPQaPaw3_YNpLCkhX66YNhuKmcJyXdqZQ9Ksk-ibsw7jctIYei5tXCYkKwXABgOqsH/exec"; 
-
 // ============================================================================
 
 export const Carpool: React.FC = () => {
@@ -44,10 +36,28 @@ export const Carpool: React.FC = () => {
       if (GOOGLE_SCRIPT_URL) {
         const response = await fetch(GOOGLE_SCRIPT_URL);
         const data = await response.json();
-        // Reverse to show newest first
-        setRides(Array.isArray(data) ? data.reverse() : []);
+        
+        // SANITIZACIÓN DE DATOS (IMPORTANTE PARA EVITAR CRASH)
+        // Convertimos todo a String o Number según corresponda para evitar errores
+        // si Google Sheets devuelve un número en lugar de texto.
+        const safeData = Array.isArray(data) ? data.map((r: any) => ({
+          ...r,
+          id: String(r.id),
+          driverName: String(r.driverName || 'Anónimo'),
+          contact: String(r.contact || ''), // Convertir teléfono a string por si acaso
+          origin: String(r.origin || ''),
+          destination: String(r.destination || ''),
+          date: String(r.date || ''),
+          time: String(r.time || ''),
+          seatsAvailable: Number(r.seatsAvailable) || 0,
+          type: (r.type === 'offer' || r.type === 'request') ? r.type : 'offer',
+          note: r.note ? String(r.note) : '',
+          timestamp: Number(r.timestamp) || Date.now()
+        })).reverse() : [];
+
+        setRides(safeData);
       } else {
-        // Fallback to localStorage for demo
+        // Fallback demo
         const stored = localStorage.getItem('wedding_rides');
         if (stored) setRides(JSON.parse(stored));
       }
@@ -65,12 +75,12 @@ export const Carpool: React.FC = () => {
     const newRide: Ride = {
       id: Date.now().toString(),
       driverName: formData.name,
-      contact: formData.contact,
+      contact: String(formData.contact), // Asegurar string
       origin: formData.origin,
       destination: "Sanlúcar de Barrameda",
       date: formData.date,
       time: formData.time,
-      seatsAvailable: formData.seats,
+      seatsAvailable: Number(formData.seats),
       type: activeTab === 'offer' ? 'offer' : 'request',
       note: formData.note,
       timestamp: Date.now()
@@ -81,26 +91,25 @@ export const Carpool: React.FC = () => {
         // Send to Google Sheet
         await fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
-          mode: 'no-cors', // Important for Google Apps Script to avoid CORS errors
+          mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newRide)
         });
         
-        // Wait a bit because no-cors doesn't return data immediately
         await new Promise(r => setTimeout(r, 1500));
         await fetchRides();
       } else {
-        // Local Demo Save
         const updatedRides = [newRide, ...rides];
         setRides(updatedRides);
         localStorage.setItem('wedding_rides', JSON.stringify(updatedRides));
-        // Simulate network delay
         await new Promise(r => setTimeout(r, 800));
       }
       
-      // Reset Form
       setFormData({ ...formData, name: '', contact: '', origin: '', note: '' });
       alert(activeTab === 'offer' ? "¡Viaje publicado con éxito!" : "¡Solicitud publicada con éxito!");
+      
+      // Opcional: Cambiar de pestaña para ver tu publicación si publicaste oferta
+      // if (activeTab === 'offer') setActiveTab('find');
       
     } catch (error) {
       console.error(error);
@@ -134,8 +143,6 @@ export const Carpool: React.FC = () => {
               <AlertCircle size={20} className="flex-shrink-0" />
               <div>
                 <strong>Modo Demo Activado:</strong> Los datos no se guardan en la nube.
-                <br/>
-                <span className="text-xs opacity-80">Configura la URL de Google Script en el código para activar la base de datos real.</span>
               </div>
             </div>
           )}
@@ -186,49 +193,63 @@ export const Carpool: React.FC = () => {
                 </p>
               </div>
             ) : (
-              filteredRides.map((ride) => (
-                <div key={ride.id} className="bg-white p-5 rounded-2xl shadow-sm border border-wedding-100 hover:shadow-md transition-all">
-                  <div className="flex justify-between items-start mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-wedding-100 flex items-center justify-center text-wedding-700 font-bold text-lg">
-                        {ride.driverName.charAt(0).toUpperCase()}
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-wedding-900">{ride.driverName}</h4>
-                        <p className="text-xs text-wedding-500">{new Date(ride.timestamp).toLocaleDateString()}</p>
-                      </div>
-                    </div>
-                    <span className="bg-wedding-50 text-wedding-800 text-xs font-bold px-3 py-1 rounded-full border border-wedding-200">
-                      {ride.seatsAvailable} {activeTab === 'find' ? 'plazas' : 'personas'}
-                    </span>
-                  </div>
+              filteredRides.map((ride) => {
+                // Preparar datos seguros para renderizar
+                const safeName = String(ride.driverName || '?');
+                const safeInitial = safeName.charAt(0).toUpperCase();
+                const safeContact = String(ride.contact || '');
+                // Solo números para el enlace de WhatsApp
+                const whatsappNumber = safeContact.replace(/\D/g,'');
 
-                  <div className="space-y-2 text-sm text-wedding-700 mb-4">
-                    <div className="flex items-center gap-2">
-                      <MapPin size={16} className="text-accent" />
-                      <span className="font-medium">Origen:</span> {ride.origin}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock size={16} className="text-accent" />
-                      <span>{ride.date} a las {ride.time}h</span>
-                    </div>
-                    {ride.note && (
-                      <div className="bg-wedding-50 p-3 rounded-lg text-sm italic mt-2">
-                        "{ride.note}"
+                return (
+                  <div key={ride.id} className="bg-white p-5 rounded-2xl shadow-sm border border-wedding-100 hover:shadow-md transition-all">
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-wedding-100 flex items-center justify-center text-wedding-700 font-bold text-lg">
+                          {safeInitial}
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-wedding-900">{safeName}</h4>
+                          <p className="text-xs text-wedding-500">
+                             {/* Safe date rendering */}
+                             {new Date(ride.timestamp).toLocaleDateString() !== 'Invalid Date' 
+                               ? new Date(ride.timestamp).toLocaleDateString() 
+                               : 'Reciente'}
+                          </p>
+                        </div>
                       </div>
-                    )}
-                  </div>
+                      <span className="bg-wedding-50 text-wedding-800 text-xs font-bold px-3 py-1 rounded-full border border-wedding-200">
+                        {ride.seatsAvailable} {activeTab === 'find' ? 'plazas' : 'personas'}
+                      </span>
+                    </div>
 
-                  <a 
-                    href={`https://wa.me/${ride.contact.replace(/\D/g,'')}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="block w-full text-center bg-wedding-900 text-white py-2 rounded-lg font-medium hover:bg-accent transition-colors"
-                  >
-                    Contactar
-                  </a>
-                </div>
-              ))
+                    <div className="space-y-2 text-sm text-wedding-700 mb-4">
+                      <div className="flex items-center gap-2">
+                        <MapPin size={16} className="text-accent" />
+                        <span className="font-medium">Origen:</span> {ride.origin}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock size={16} className="text-accent" />
+                        <span>{ride.date} a las {ride.time}h</span>
+                      </div>
+                      {ride.note && (
+                        <div className="bg-wedding-50 p-3 rounded-lg text-sm italic mt-2">
+                          "{ride.note}"
+                        </div>
+                      )}
+                    </div>
+
+                    <a 
+                      href={`https://wa.me/${whatsappNumber}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block w-full text-center bg-wedding-900 text-white py-2 rounded-lg font-medium hover:bg-accent transition-colors"
+                    >
+                      Contactar
+                    </a>
+                  </div>
+                );
+              })
             )}
           </div>
 
@@ -280,8 +301,11 @@ export const Carpool: React.FC = () => {
                       type="number" 
                       min="1"
                       max="8"
-                      value={formData.seats}
-                      onChange={e => setFormData({...formData, seats: parseInt(e.target.value)})}
+                      value={formData.seats || ''}
+                      onChange={e => {
+                        const val = parseInt(e.target.value);
+                        setFormData({...formData, seats: isNaN(val) ? 0 : val});
+                      }}
                       className="w-full px-4 py-2.5 bg-wedding-50 border border-wedding-200 rounded-xl focus:ring-2 focus:ring-accent outline-none"
                     />
                   </div>
