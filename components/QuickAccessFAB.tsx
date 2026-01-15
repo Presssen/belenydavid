@@ -8,9 +8,9 @@ export const QuickAccessFAB: React.FC = () => {
   const locations = [
     {
       label: "Ir a la Finca",
-      subLabel: "Bodegas Barón",
+      subLabel: "Finca Barón",
       icon: <Wine size={20} />,
-      url: "https://www.google.com/maps/search/?api=1&query=Bodegas+Baron+Sanlucar",
+      url: "https://www.google.com/maps/search/?api=1&query=Finca+Baron+Sanlucar+de+Barrameda",
       color: "bg-wedding-800"
     },
     {
