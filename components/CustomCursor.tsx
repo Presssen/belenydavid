@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 export const CustomCursor: React.FC = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const cursorRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
 
@@ -13,7 +14,13 @@ export const CustomCursor: React.FC = () => {
   const endY = useRef(0);
 
   useEffect(() => {
+    // Check if the device has a precise pointer (mouse)
+    const mediaQuery = window.matchMedia('(pointer: fine)');
+    setIsMobile(!mediaQuery.matches);
+
     const handleMouseMove = (e: MouseEvent) => {
+      if (!mediaQuery.matches) return;
+
       // Update target position
       endX.current = e.clientX;
       endY.current = e.clientY;
@@ -38,9 +45,8 @@ export const CustomCursor: React.FC = () => {
     };
 
     const animateCursor = (time: number) => {
-      if (previousTimeRef.current !== undefined) {
+      if (previousTimeRef.current !== undefined && mediaQuery.matches) {
         // Linear interpolation (lerp) for smooth trailing
-        // Current position += (Target - Current) * factor
         setPosition(prev => {
           const newX = prev.x + (endX.current - prev.x) * 0.15;
           const newY = prev.y + (endY.current - prev.y) * 0.15;
@@ -58,14 +64,18 @@ export const CustomCursor: React.FC = () => {
     window.addEventListener('mousemove', handleMouseMove);
     requestRef.current = requestAnimationFrame(animateCursor);
 
+    const listener = (e: MediaQueryListEvent) => setIsMobile(!e.matches);
+    mediaQuery.addEventListener('change', listener);
+
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(requestRef.current);
+      mediaQuery.removeEventListener('change', listener);
     };
   }, []);
 
-  // Don't render on touch devices generally, but for this request we render it 
-  // CSS media queries in index.html handle hiding the default cursor on desktop
+  // Do not render anything on mobile/tablets
+  if (isMobile) return null;
   
   return (
     <>

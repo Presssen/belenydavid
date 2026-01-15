@@ -3,6 +3,7 @@ import { Plus, MapPin, Wine, PartyPopper, X, Navigation } from 'lucide-react';
 
 export const QuickAccessFAB: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [showHint, setShowHint] = useState(true);
 
   const locations = [
     {
@@ -30,6 +31,7 @@ export const QuickAccessFAB: React.FC = () => {
 
   return (
     <div className="fixed bottom-6 right-6 z-[80] flex flex-col items-end gap-3 font-sans">
+      
       {/* Menu Items */}
       <div className={`flex flex-col items-end gap-3 transition-all duration-300 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}>
         {locations.map((loc, index) => (
@@ -68,16 +70,38 @@ export const QuickAccessFAB: React.FC = () => {
         ))}
       </div>
 
-      {/* Main Trigger Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`
-          w-14 h-14 rounded-full shadow-xl flex items-center justify-center text-white transition-all duration-300 z-50
-          ${isOpen ? 'bg-wedding-700 rotate-45' : 'bg-wedding-900 hover:scale-105'}
-        `}
-      >
-        {isOpen ? <Plus size={28} /> : <Navigation size={24} className="ml-0.5 mt-0.5" />}
-      </button>
+      <div className="relative flex items-center">
+        {/* Hint Message Bubble */}
+        {showHint && !isOpen && (
+          <div className="absolute right-full mr-4 whitespace-nowrap z-50 animate-fade-in-up origin-right">
+            <div className="bg-white/95 backdrop-blur-sm pl-4 pr-2 py-2.5 rounded-xl shadow-xl border border-wedding-200 flex items-center gap-3">
+              <span className="text-sm font-semibold text-wedding-800">¿A dónde quieres ir?</span>
+              <div className="h-4 w-px bg-wedding-200"></div>
+              <button 
+                onClick={() => setShowHint(false)} 
+                className="p-1 text-wedding-400 hover:text-red-500 hover:bg-wedding-50 rounded-full transition-colors"
+                title="Cerrar mensaje"
+              >
+                <X size={14} />
+              </button>
+              
+              {/* Triangle Arrow */}
+              <div className="absolute top-1/2 -right-1.5 -mt-1.5 w-3 h-3 bg-white border-t border-r border-wedding-200 rotate-45 transform"></div>
+            </div>
+          </div>
+        )}
+
+        {/* Main Trigger Button */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className={`
+            w-14 h-14 rounded-full shadow-xl flex items-center justify-center text-white transition-all duration-300 z-50 relative
+            ${isOpen ? 'bg-wedding-700 rotate-45' : 'bg-wedding-900 hover:scale-105 hover:bg-wedding-800'}
+          `}
+        >
+          {isOpen ? <Plus size={28} /> : <Navigation size={24} className="ml-0.5 mt-0.5" />}
+        </button>
+      </div>
     </div>
   );
 };
