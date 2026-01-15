@@ -70,15 +70,18 @@ export const QuickAccessFAB: React.FC = () => {
         ))}
       </div>
 
-      <div className="relative flex items-center">
+      <div className="relative flex items-center justify-center">
         {/* Hint Message Bubble */}
         {showHint && !isOpen && (
-          <div className="absolute right-full mr-4 whitespace-nowrap z-50 animate-fade-in-up origin-right">
-            <div className="bg-white/95 backdrop-blur-sm pl-4 pr-2 py-2.5 rounded-xl shadow-xl border border-wedding-200 flex items-center gap-3">
-              <span className="text-sm font-semibold text-wedding-800">¿A dónde quieres ir?</span>
+          <div className="absolute right-full mr-5 whitespace-nowrap z-50 animate-fade-in-up origin-right">
+            <div className="bg-white/95 backdrop-blur-sm pl-4 pr-2 py-2.5 rounded-xl shadow-2xl border border-wedding-200 flex items-center gap-3">
+              <span className="text-sm font-semibold text-wedding-800 tracking-tight">¿A dónde quieres ir?</span>
               <div className="h-4 w-px bg-wedding-200"></div>
               <button 
-                onClick={() => setShowHint(false)} 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowHint(false);
+                }} 
                 className="p-1 text-wedding-400 hover:text-red-500 hover:bg-wedding-50 rounded-full transition-colors"
                 title="Cerrar mensaje"
               >
@@ -91,15 +94,28 @@ export const QuickAccessFAB: React.FC = () => {
           </div>
         )}
 
+        {/* Pulse effect background (visible only when closed) */}
+        {!isOpen && (
+          <div className="absolute inset-0 bg-wedding-900/40 rounded-full animate-ping pointer-events-none scale-125" />
+        )}
+
         {/* Main Trigger Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
           className={`
-            w-14 h-14 rounded-full shadow-xl flex items-center justify-center text-white transition-all duration-300 z-50 relative
-            ${isOpen ? 'bg-wedding-700 rotate-45' : 'bg-wedding-900 hover:scale-105 hover:bg-wedding-800'}
+            w-16 h-16 rounded-full shadow-[0_10px_25px_-5px_rgba(0,0,0,0.3)] flex items-center justify-center text-white transition-all duration-300 z-50 relative overflow-hidden
+            ${isOpen 
+              ? 'bg-wedding-700 rotate-45' 
+              : 'bg-wedding-900 hover:scale-110 hover:bg-wedding-800 animate-attention'}
           `}
         >
-          {isOpen ? <Plus size={28} /> : <Navigation size={24} className="ml-0.5 mt-0.5" />}
+          {isOpen ? (
+            <Plus size={32} />
+          ) : (
+            <div className="flex items-center justify-center w-full h-full">
+              <Navigation size={28} className="transform rotate-0" />
+            </div>
+          )}
         </button>
       </div>
     </div>

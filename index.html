@@ -37,6 +37,8 @@
             animation: {
               'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
               'fade-in-down': 'fadeInDown 0.5s ease-out forwards',
+              'bounce-slow': 'bounce 3s infinite',
+              'attention': 'attention 4s infinite ease-in-out',
             },
             keyframes: {
               fadeInUp: {
@@ -46,6 +48,12 @@
               fadeInDown: {
                 '0%': { opacity: '0', transform: 'translateY(-10px)' },
                 '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              attention: {
+                '0%, 100%': { transform: 'scale(1) rotate(0deg)' },
+                '10%, 20%': { transform: 'scale(1.1) rotate(-3deg)' },
+                '30%, 40%': { transform: 'scale(1.1) rotate(3deg)' },
+                '50%': { transform: 'scale(1) rotate(0deg)' },
               }
             }
           },
