@@ -9,6 +9,8 @@ import { Footer } from './components/Footer';
 import { WelcomeModal } from './components/WelcomeModal';
 import { Carpool } from './components/Carpool';
 import { GuestNameModal } from './components/GuestNameModal';
+import { CustomCursor } from './components/CustomCursor';
+import { QuickAccessFAB } from './components/QuickAccessFAB';
 import { ViewState } from './types';
 
 const App: React.FC = () => {
@@ -23,6 +25,20 @@ const App: React.FC = () => {
       setGuestName(savedName);
       setIsNameSet(true);
     }
+
+    // Additional event listeners for protection
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Prevent PrintScreen or shortcuts like Ctrl+C, Ctrl+U (view source), Ctrl+S
+      if (
+        (e.ctrlKey && (e.key === 'c' || e.key === 'u' || e.key === 's' || e.key === 'p')) ||
+        e.key === 'F12'
+      ) {
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const handleNameSubmit = (name: string) => {
@@ -35,35 +51,55 @@ const App: React.FC = () => {
     localStorage.removeItem('wedding_guest_name');
     setGuestName('');
     setIsNameSet(false);
-    // Optional: Scroll to top to ensure modal is seen comfortably or reload
     window.scrollTo(0, 0);
   };
 
-  if (!isNameSet) {
-    return <GuestNameModal onNameSubmit={handleNameSubmit} />;
-  }
+  // Prevent default context menu (Right Click)
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+  };
+
+  // Prevent Dragging anywhere
+  const handleDragStart = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
 
   return (
-    <div className="min-h-screen w-full relative flex flex-col">
-      {currentView === 'home' && <WelcomeModal guestName={guestName} />}
-      
-      <Navbar currentView={currentView} onNavigate={setCurrentView} />
-      
-      <main className="flex-grow">
-        {currentView === 'home' ? (
-          <>
-            <Hero guestName={guestName} />
-            <EventDetails />
-            <Accommodation />
-            <Activities />
-            <Gift guestName={guestName} />
-          </>
-        ) : (
-          <Carpool guestName={guestName} />
-        )}
-      </main>
-      
-      <Footer onEditName={handleResetName} guestName={guestName} />
+    <div 
+      className="min-h-screen w-full relative flex flex-col"
+      onContextMenu={handleContextMenu}
+      onDragStart={handleDragStart}
+    >
+      <CustomCursor />
+
+      {!isNameSet ? (
+        <GuestNameModal onNameSubmit={handleNameSubmit} />
+      ) : (
+        <>
+          {currentView === 'home' && <WelcomeModal guestName={guestName} />}
+          
+          <Navbar currentView={currentView} onNavigate={setCurrentView} />
+          
+          <main className="flex-grow">
+            {currentView === 'home' ? (
+              <>
+                <Hero guestName={guestName} />
+                <EventDetails />
+                <Accommodation />
+                <Activities />
+                <Gift guestName={guestName} />
+              </>
+            ) : (
+              <Carpool guestName={guestName} />
+            )}
+          </main>
+          
+          <Footer onEditName={handleResetName} guestName={guestName} />
+          
+          {/* Floating Action Button for Quick Access */}
+          <QuickAccessFAB />
+        </>
+      )}
     </div>
   );
 };
