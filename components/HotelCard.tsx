@@ -70,7 +70,9 @@ export const HotelCard: React.FC<HotelCardProps> = ({ hotel, onShowDetails }) =>
           <MapPin size={12} className="mr-1" />
           <span>{hotel.address}</span>
           <span className="mx-2">•</span>
-          <span className="font-semibold text-accent">{hotel.walkingDistanceMinutes} min a pie</span>
+          <span className="font-semibold text-accent">
+            {hotel.distanceText || `${hotel.walkingDistanceMinutes} min a pie`}
+          </span>
         </div>
 
         <p className="text-wedding-700 text-sm leading-relaxed mb-4 flex-1 line-clamp-3">

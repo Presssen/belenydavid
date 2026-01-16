@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SectionId } from '../types';
-import { MapPin, Clock, CalendarHeart, Wine, CalendarPlus, Navigation, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, Clock, CalendarHeart, Wine, CalendarPlus, Navigation, ChevronLeft, ChevronRight, Bus } from 'lucide-react';
 
 const RECEPTION_IMAGES = [
   "https://cdn.shopify.com/s/files/1/0370/2466/1636/files/e80e68fd-32d8-4a03-afd6-46d5b8c91434_1_226070-168667643670072.jpg?v=1768468031",
@@ -57,10 +57,10 @@ BANQUETE: A continuación en Finca Barón.
         </div>
 
         {/* Timeline Container */}
-        <div className="space-y-16">
+        <div className="flex flex-col">
           
           {/* Church Section */}
-          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-wedding-100 flex flex-col md:flex-row items-center gap-8 md:gap-12">
+          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-wedding-100 flex flex-col md:flex-row items-center gap-8 md:gap-12 z-10 relative">
             <div className="flex-1 text-center md:text-left">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-wedding-100 text-wedding-600 mb-4">
                 <CalendarHeart size={24} />
@@ -104,11 +104,25 @@ BANQUETE: A continuación en Finca Barón.
             </div>
           </div>
 
-          {/* Connection Line */}
-          <div className="w-px h-16 bg-wedding-300 mx-auto"></div>
+          {/* Transportation Info / Connection */}
+          <div className="flex flex-col items-center py-4 relative z-0">
+             <div className="w-px h-12 bg-wedding-300"></div>
+             
+             <div className="bg-white border border-wedding-200 rounded-2xl py-4 px-8 flex flex-col md:flex-row items-center gap-4 text-wedding-800 shadow-sm mx-auto max-w-lg text-center md:text-left transform hover:scale-105 transition-transform duration-300">
+                <div className="bg-wedding-50 p-3 rounded-full shadow-sm text-wedding-600 shrink-0">
+                    <Bus size={24} />
+                </div>
+                <div>
+                    <p className="text-base font-bold text-wedding-900">Transporte Incluido</p>
+                    <p className="text-sm text-wedding-600 leading-tight">Habrá opción de autobuses entre la ceremonia y el banquete. <br/><span className="italic opacity-80">(Se concretarán horarios y puntos de recogida más adelante)</span></p>
+                </div>
+             </div>
+
+             <div className="w-px h-12 bg-wedding-300"></div>
+          </div>
 
           {/* Reception Section */}
-          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-wedding-100 flex flex-col md:flex-row-reverse items-center gap-8 md:gap-12">
+          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-wedding-100 flex flex-col md:flex-row-reverse items-center gap-8 md:gap-12 z-10 relative">
             <div className="flex-1 text-center md:text-right">
               <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-accent/10 text-accent mb-4">
                 <Wine size={24} />

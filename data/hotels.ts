@@ -7,7 +7,8 @@ export const hotels: Hotel[] = [
     address: 'Calle Caballeros 9',
     stars: 3,
     priceRange: '75€ - 95€',
-    walkingDistanceMinutes: 12,
+    walkingDistanceMinutes: 15,
+    distanceText: '15 min en coche',
     description: 'Antiguo palacio de la duquesa de Medina Sidonia. Un hotel pequeño con mucha historia, situado un poco más alejado del centro (en cuesta) pero precioso. Tiene un bar de desayuno típico.',
     amenities: {
       parking: true,

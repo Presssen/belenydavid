@@ -80,7 +80,7 @@ export const HotelDetailsModal: React.FC<HotelDetailsModalProps> = ({ hotel, onC
                  <span className="block text-xs text-wedding-500 uppercase">Distancia Iglesia</span>
                  <div className="flex items-center gap-2 text-accent font-semibold mt-1">
                    <MapPin size={18} />
-                   <span>{hotel.walkingDistanceMinutes} min a pie</span>
+                   <span>{hotel.distanceText || `${hotel.walkingDistanceMinutes} min a pie`}</span>
                  </div>
                </div>
             </div>

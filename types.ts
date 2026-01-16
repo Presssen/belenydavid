@@ -6,6 +6,7 @@ export interface Hotel {
   stars?: number; // 0 if not specified/hostel
   priceRange: string;
   walkingDistanceMinutes: number;
+  distanceText?: string; // Optional override for distance text (e.g. "15 min en coche")
   description: string;
   amenities: {
     parking: boolean;
