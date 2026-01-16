@@ -9,7 +9,8 @@ interface GiftProps {
 export const Gift: React.FC<GiftProps> = ({ guestName }) => {
   const [copied, setCopied] = useState(false);
   const [randomImage, setRandomImage] = useState<string>("");
-  const iban = "ES00 0000 0000 0000 0000 0000"; // Placeholder
+  // Formato estándar: ESXX Entidad Oficina DC Cuenta
+  const iban = "ES97 1583 0001 19 9151124946";
 
   const footerImages = [
     "https://cdn.shopify.com/s/files/1/0370/2466/1636/files/WhatsApp_Image_2026-01-14_at_17.32.16_3.jpg?v=1768427493",
@@ -51,12 +52,12 @@ export const Gift: React.FC<GiftProps> = ({ guestName }) => {
         <div className="bg-wedding-50 border border-wedding-200 rounded-2xl p-8 shadow-sm max-w-lg mx-auto transform transition-all hover:scale-[1.01]">
           <p className="text-xs uppercase tracking-widest text-wedding-500 mb-2">Número de Cuenta (IBAN)</p>
           <div className="flex items-center justify-center gap-3 mb-2">
-            <span className="font-mono text-xl md:text-2xl text-wedding-900 font-medium tracking-tight">
+            <span className="font-mono text-xl md:text-2xl text-wedding-900 font-medium tracking-tight break-all sm:break-normal">
               {iban}
             </span>
             <button 
               onClick={handleCopy}
-              className="p-2 text-wedding-500 hover:text-accent hover:bg-wedding-100 rounded-lg transition-all"
+              className="p-2 text-wedding-500 hover:text-accent hover:bg-wedding-100 rounded-lg transition-all flex-shrink-0"
               title="Copiar número"
             >
               {copied ? <Check size={20} /> : <Copy size={20} />}
