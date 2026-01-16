@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, MapPin, Wine, PartyPopper, X, Navigation } from 'lucide-react';
+import { Plus, MapPin, Wine, PartyPopper, X, Navigation, Car } from 'lucide-react';
 
 export const QuickAccessFAB: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,6 +19,13 @@ export const QuickAccessFAB: React.FC = () => {
       icon: <MapPin size={20} />,
       url: "https://www.google.com/maps/search/?api=1&query=Iglesia+de+Santo+Domingo+Sanlucar+de+Barrameda",
       color: "bg-wedding-800"
+    },
+    {
+      label: "Parking",
+      subLabel: "Económico",
+      icon: <Car size={20} />,
+      url: "https://www.google.com/maps/search/?api=1&query=Parking+Parkia+Sanlucar+de+Barrameda",
+      color: "bg-blue-600"
     },
     {
       label: "Preboda",

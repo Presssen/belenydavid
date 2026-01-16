@@ -6,7 +6,7 @@ export const hotels: Hotel[] = [
     name: 'Hotel Posada de Palacio',
     address: 'Calle Caballeros 9',
     stars: 3,
-    priceRange: '60€ - 80€',
+    priceRange: '75€ - 95€',
     walkingDistanceMinutes: 12,
     description: 'Antiguo palacio de la duquesa de Medina Sidonia. Un hotel pequeño con mucha historia, situado un poco más alejado del centro (en cuesta) pero precioso. Tiene un bar de desayuno típico.',
     amenities: {
@@ -16,7 +16,7 @@ export const hotels: Hotel[] = [
       wifi: true,
     },
     discountCode: 'BODABELENYDAVID',
-    discountNote: '10% Dto (Jueves a día 20)',
+    discountNote: '10% Dto (Solo aplicable del Jueves 18 al Domingo 20)',
     imageUrl: 'https://cdn.shopify.com/s/files/1/0370/2466/1636/files/150465119.jpg?v=1768426319',
     bookingUrl: 'https://posadadepalacio.com/',
     recommended: true
@@ -26,7 +26,7 @@ export const hotels: Hotel[] = [
     name: 'Hotel Guadalquivir',
     address: 'Av. Calzada Duquesa Isabel 20',
     stars: 4,
-    priceRange: '90€ - 110€',
+    priceRange: '100€ - 130€',
     walkingDistanceMinutes: 10,
     description: 'Situado en plena calzada ferial. Tiene un ático precioso (planta 14) con vistas a todo Sanlúcar. Desayuno incluido. A 10 min de la playa.',
     amenities: {
@@ -35,7 +35,9 @@ export const hotels: Hotel[] = [
       pool: false,
       wifi: true,
     },
-    discountNote: 'Indicar número de habitaciones necesarias por email.',
+    discountCode: 'Ref: 14.103',
+    discountNote: 'IMPORTANTE: Llamar por teléfono para reservar indicando que venís a nuestra boda con la referencia 14.103. No hace falta pagar nada ahora, se bloquea la habitación hasta el 19 de Junio. Si no se paga antes de esa fecha, se libera.',
+    contactEmail: 'reservas@hotelguadalquivir.com',
     imageUrl: 'https://cdn.shopify.com/s/files/1/0370/2466/1636/files/eb1735e8765b565.jpg?v=1768426377',
     bookingUrl: 'https://www.hotelguadalquivir.com/',
     recommended: true
@@ -45,7 +47,7 @@ export const hotels: Hotel[] = [
     name: 'Hotel Macià Doñana',
     address: 'Calle Albatros 3',
     stars: 4,
-    priceRange: '~210€',
+    priceRange: '~140€',
     walkingDistanceMinutes: 13,
     description: 'Hotel precioso y grande con restaurante y vistas muy bonitas. Tiene una gran piscina y está a 2 minutos de la playa. Algo más alejado de la iglesia (5 min en coche).',
     amenities: {
@@ -54,7 +56,7 @@ export const hotels: Hotel[] = [
       pool: true,
       wifi: true,
     },
-    discountNote: 'Escribir email solicitando info.',
+    discountNote: 'Escribir email solicitando información para grupos.',
     imageUrl: 'https://cdn.shopify.com/s/files/1/0370/2466/1636/files/Piscina_21-5.jpg?v=1768426409',
     bookingUrl: 'https://www.maciahoteles.com/hoteles/destino-cadiz/macia-donana/',
     recommended: true
@@ -64,7 +66,7 @@ export const hotels: Hotel[] = [
     name: 'Hotel Casa de las Especias',
     address: 'Calle Regina 44',
     stars: 1,
-    priceRange: '~80€',
+    priceRange: '~85€',
     walkingDistanceMinutes: 5,
     description: 'Tipo hostal, habitaciones muy buenas y acogedoras. No tiene desayuno pero la calle de bares está cerca. Muy bien de precio y ubicación.',
     amenities: {
@@ -82,7 +84,7 @@ export const hotels: Hotel[] = [
     name: 'Hotel Barrameda',
     address: 'Calle Principal (Centro)',
     stars: 2,
-    priceRange: '60€ - 70€',
+    priceRange: '70€ - 90€',
     walkingDistanceMinutes: 5,
     description: 'Hotel nuevo (hace dos años), súper bonito y fenomenal. Situado en plena calle central. Sin desayuno, pero rodeado de bares.',
     amenities: {
@@ -91,6 +93,7 @@ export const hotels: Hotel[] = [
       pool: false,
       wifi: true,
     },
+    discountNote: 'Hotel cerrado hasta el 13 de Febrero. A partir de esa fecha publicaremos aquí el código de descuento.',
     imageUrl: 'https://cdn.shopify.com/s/files/1/0370/2466/1636/files/37430474.jpg?v=1768426525',
     bookingUrl: 'https://www.hotelbarrameda.com/',
     recommended: true
@@ -100,7 +103,7 @@ export const hotels: Hotel[] = [
     name: 'Hotel La Alcoba del Agua',
     address: 'Calle Alcoba 26',
     stars: 2,
-    priceRange: '~80€',
+    priceRange: '90€ - 110€',
     walkingDistanceMinutes: 2,
     description: 'Muy cerca de la iglesia. Cuenta con piscina y está cerca de bares típicos y del centro. Un lugar con mucho encanto.',
     amenities: {
@@ -118,7 +121,7 @@ export const hotels: Hotel[] = [
     name: 'Hotel Los Helechos',
     address: 'Plaza Madre De Dios, 9',
     stars: 3,
-    priceRange: '90€ - 110€',
+    priceRange: '85€ - 105€',
     walkingDistanceMinutes: 9,
     description: 'Hotel rústico y bonito. Enfrente de dos iglesias y dos bodegas típicas. Ofrece cuna gratis.',
     amenities: {
@@ -136,7 +139,7 @@ export const hotels: Hotel[] = [
     name: 'Hotel Albariza',
     address: 'Calle Bolsa 65',
     stars: 4,
-    priceRange: '100€ - 120€',
+    priceRange: '110€ - 140€',
     walkingDistanceMinutes: 3,
     description: 'Hotel pequeño, rústico y muy acogedor con patio interior. 15 habitaciones. Muy cerca de la iglesia.',
     amenities: {
@@ -154,7 +157,7 @@ export const hotels: Hotel[] = [
     name: 'Apartamentos La Capillita',
     address: 'Calle Bolsa 6',
     stars: 0,
-    priceRange: '~60€',
+    priceRange: '~70€',
     walkingDistanceMinutes: 3,
     description: 'Apartamentos muy céntricos. No tienen parking ni desayuno, pero hay dos bares excelentes justo debajo.',
     amenities: {
@@ -172,7 +175,7 @@ export const hotels: Hotel[] = [
     name: 'Apartamento Casa Bolsa',
     address: 'Calle Bolsa 43',
     stars: 0,
-    priceRange: '~60€',
+    priceRange: '~70€',
     walkingDistanceMinutes: 3,
     description: 'Ubicación excelente. Sin parking ni desayuno, pero rodeado de opciones gastronómicas.',
     amenities: {
@@ -190,7 +193,7 @@ export const hotels: Hotel[] = [
     name: 'Hostal Campo Nuevo',
     address: 'Calle Barrameda 42',
     stars: 2,
-    priceRange: '~80€',
+    priceRange: '~75€',
     walkingDistanceMinutes: 6,
     description: 'Conocido por sus desayunos. Habitaciones familiares disponibles. Cerca de la playa y del centro.',
     amenities: {
