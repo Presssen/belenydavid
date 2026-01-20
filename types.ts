@@ -45,4 +45,4 @@ export enum SectionId {
   GIFT = 'regalo',
 }
 
-export type ViewState = 'home' | 'carpool';
+export type ViewState = 'home' | 'carpool' | 'travel';

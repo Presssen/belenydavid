@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { X, CalendarClock, ChevronRight } from 'lucide-react';
-import { SectionId } from '../types';
+import { X, CalendarClock, ChevronRight, Plane } from 'lucide-react';
+import { SectionId, ViewState } from '../types';
 
 interface WelcomeModalProps {
   guestName?: string;
+  onNavigate: (view: ViewState) => void;
 }
 
-export const WelcomeModal: React.FC<WelcomeModalProps> = ({ guestName }) => {
+export const WelcomeModal: React.FC<WelcomeModalProps> = ({ guestName, onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -27,6 +28,11 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({ guestName }) => {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  const handlePlanTrip = () => {
+    handleClose();
+    onNavigate('travel');
   };
 
   if (!isOpen) return null;
@@ -61,7 +67,7 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({ guestName }) => {
           </h3>
           
           <p className="text-wedding-600 mb-6 leading-relaxed">
-            Sanlúcar es un destino muy solicitado. Por favor, <strong>reservad vuestro alojamiento cuanto antes</strong> para aseguraros las mejores opciones.
+            Sanlúcar es un destino muy solicitado. Por favor, <strong>reservad vuestro alojamiento cuanto antes</strong>.
           </p>
 
           <div className="space-y-3">
@@ -71,11 +77,19 @@ export const WelcomeModal: React.FC<WelcomeModalProps> = ({ guestName }) => {
             >
               Ver Alojamientos Recomendados <ChevronRight size={16} />
             </button>
+            
+            <button 
+              onClick={handlePlanTrip}
+              className="w-full py-3 bg-white border border-wedding-200 text-wedding-800 rounded-xl font-medium hover:bg-wedding-50 transition-all active:scale-95 flex items-center justify-center gap-2"
+            >
+              <Plane size={16} /> Planificar Viaje (Vuelos/Tren)
+            </button>
+
             <button 
               onClick={handleClose}
-              className="w-full py-3 text-wedding-500 hover:text-wedding-800 text-sm font-medium"
+              className="w-full py-2 text-wedding-400 hover:text-wedding-600 text-sm font-medium mt-2"
             >
-              Entendido, lo haré luego
+              Cerrar
             </button>
           </div>
         </div>

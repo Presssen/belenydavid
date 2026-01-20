@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SectionId, ViewState } from '../types';
-import { Menu, X, Car } from 'lucide-react';
+import { Menu, X, Plane } from 'lucide-react';
 
 interface NavbarProps {
   currentView: ViewState;
@@ -23,7 +23,6 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
   const handleNavigation = (id: SectionId) => {
     if (currentView !== 'home') {
       onNavigate('home');
-      // Esperar un tick para que se renderice la home antes de hacer scroll
       setTimeout(() => {
         const element = document.getElementById(id);
         if (element) {
@@ -60,7 +59,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
           border border-white/40
           rounded-full shadow-lg shadow-black/5
           flex items-center justify-between gap-4 md:gap-8
-          max-w-3xl w-full
+          max-w-4xl w-full
         `}
       >
         {/* Logo / Initials */}
@@ -90,45 +89,48 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
           
           <div className="h-4 w-px bg-wedding-300"></div>
 
-          {/* Carpool Button Desktop */}
-          <button
-            onClick={() => {
-              onNavigate('carpool');
-              setIsMobileMenuOpen(false);
-            }}
-            className={`
-              flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full transition-all
-              ${currentView === 'carpool' 
-                ? 'bg-wedding-900 text-white shadow-md' 
-                : 'bg-wedding-100 text-wedding-800 hover:bg-wedding-200'}
-            `}
-          >
-            <Car size={16} />
-            <span>Coche</span>
-          </button>
+          {/* Action Buttons Desktop */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => {
+                onNavigate('travel');
+                setIsMobileMenuOpen(false);
+              }}
+              className={`
+                flex items-center gap-2 text-sm font-medium px-5 py-2.5 rounded-full transition-all
+                ${currentView === 'travel' 
+                  ? 'bg-wedding-800 text-white shadow-md' 
+                  : 'bg-wedding-50 text-wedding-800 hover:bg-wedding-100'}
+              `}
+              title="Planificar Viaje"
+            >
+              <Plane size={16} />
+              <span>Planificar viaje</span>
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu Toggle */}
-        <div className="md:hidden flex items-center gap-3">
-           {/* Carpool Button Mobile Icon */}
+        <div className="md:hidden flex items-center gap-2">
+           {/* Travel Button Mobile Icon */}
            <button
             onClick={() => {
-              onNavigate('carpool');
+              onNavigate('travel');
               setIsMobileMenuOpen(false);
             }}
             className={`
               p-2 rounded-full transition-all
-              ${currentView === 'carpool' 
-                ? 'bg-wedding-900 text-white' 
-                : 'bg-wedding-100 text-wedding-800'}
+              ${currentView === 'travel' 
+                ? 'bg-wedding-800 text-white' 
+                : 'bg-wedding-50 text-wedding-800'}
             `}
           >
-            <Car size={18} />
+            <Plane size={18} />
           </button>
 
           <button 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="text-wedding-800 focus:outline-none p-1"
+            className="text-wedding-800 focus:outline-none p-1 ml-1"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -147,16 +149,18 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
               {item.label}
             </button>
           ))}
-          <button
-            onClick={() => {
-              onNavigate('carpool');
-              setIsMobileMenuOpen(false);
-            }}
-            className="py-3 px-4 rounded-xl text-left bg-wedding-50 text-wedding-900 font-semibold flex items-center gap-2 mt-2"
-          >
-            <Car size={18} />
-            Compartir Coche / Buscar
-          </button>
+          <div className="mt-2">
+            <button
+              onClick={() => {
+                onNavigate('travel');
+                setIsMobileMenuOpen(false);
+              }}
+              className="w-full py-3 px-4 rounded-xl text-center bg-wedding-50 text-wedding-900 font-semibold flex items-center justify-center gap-2 border border-wedding-100"
+            >
+              <Plane size={20} className="text-accent" />
+              <span>Planificar Viaje</span>
+            </button>
+          </div>
         </div>
       )}
     </div>

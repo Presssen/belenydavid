@@ -8,6 +8,7 @@ import { Gift } from './components/Gift';
 import { Footer } from './components/Footer';
 import { WelcomeModal } from './components/WelcomeModal';
 import { Carpool } from './components/Carpool';
+import { TravelPlan } from './components/TravelPlan';
 import { GuestNameModal } from './components/GuestNameModal';
 import { CustomCursor } from './components/CustomCursor';
 import { QuickAccessFAB } from './components/QuickAccessFAB';
@@ -64,6 +65,26 @@ const App: React.FC = () => {
     e.preventDefault();
   };
 
+  const renderContent = () => {
+    switch (currentView) {
+      case 'carpool':
+        return <Carpool guestName={guestName} />;
+      case 'travel':
+        return <TravelPlan onNavigate={setCurrentView} guestName={guestName} />;
+      case 'home':
+      default:
+        return (
+          <>
+            <Hero guestName={guestName} />
+            <EventDetails />
+            <Accommodation />
+            <Activities />
+            <Gift guestName={guestName} />
+          </>
+        );
+    }
+  };
+
   return (
     <div 
       className="min-h-screen w-full relative flex flex-col"
@@ -76,22 +97,17 @@ const App: React.FC = () => {
         <GuestNameModal onNameSubmit={handleNameSubmit} />
       ) : (
         <>
-          {currentView === 'home' && <WelcomeModal guestName={guestName} />}
+          {currentView === 'home' && (
+            <WelcomeModal 
+              guestName={guestName} 
+              onNavigate={setCurrentView} 
+            />
+          )}
           
           <Navbar currentView={currentView} onNavigate={setCurrentView} />
           
           <main className="flex-grow">
-            {currentView === 'home' ? (
-              <>
-                <Hero guestName={guestName} />
-                <EventDetails />
-                <Accommodation />
-                <Activities />
-                <Gift guestName={guestName} />
-              </>
-            ) : (
-              <Carpool guestName={guestName} />
-            )}
+            {renderContent()}
           </main>
           
           <Footer onEditName={handleResetName} guestName={guestName} />
