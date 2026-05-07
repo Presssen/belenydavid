@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #faf8f5;
+      color: #3a3530;
+      min-height: 100vh;
+    }
+    
+    .hero {
+      background: linear-gradient(135deg, #5c6b4f 0%, #7a8c6a 50%, #97a888 100%);
+      color: white;
+      text-align: center;
+      padding: 60px 20px 50px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: #faf8f5;
+      border-radius: 50% 50% 0 0;
+    }
+    
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3rem;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+    
+    .hero p {
+      font-size: 1rem;
+      font-weight: 300;
+      opacity: 0.9;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    
+    .container {
+      max-width: 600px;
+      margin: -10px auto 40px;
+      padding: 0 20px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px 32px;
+      box-shadow: 0 4px 30px rgba(92, 107, 79, 0.08);
+      margin-bottom: 24px;
+    }
+    
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 500;
+      color: #5c6b4f;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e8e4df;
+    }
+    
+    .field {
+      margin-bottom: 22px;
+    }
+    
+    .field label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #6b6560;
+      margin-bottom: 8px;
+      letter-spacing: 0.03em;
+    }
+    
+    .field input[type="text"],
+    .field textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid #e0dcd7;
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      color: #3a3530;
+      background: #faf8f5;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      outline: none;
+    }
+    
+    .field input:focus,
+    .field textarea:focus {
+      border-color: #7a8c6a;
+      box-shadow: 0 0 0 3px rgba(122, 140, 106, 0.12);
+    }
+    
+    .field textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    
+    /* Radio buttons */
+    .radio-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .radio-option {
+      flex: 1;
+      min-width: 120px;
+    }
+    
+    .radio-option input[type="radio"] {
+      display: none;
+    }
+    
+    .radio-option label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 16px;
+      background: #faf8f5;
+      border: 1.5px solid #e0dcd7;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: #6b6560;
+      transition: all 0.3s;
+      text-align: center;
+    }
+    
+    .radio-option input:checked + label {
+      background: #5c6b4f;
+      border-color: #5c6b4f;
+      color: white;
+      font-weight: 500;
+    }
+    
+    .radio-option label:hover {
+      border-color: #7a8c6a;
+    }
+    
+    /* Acompañantes */
+    .acomp-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .acomp-card {
+      background: #f5f3ef;
+      border-radius: 14px;
+      padding: 20px;
+      position: relative;
+      border: 1px solid #e8e4df;
+    }
+    
+    .acomp-card .field:last-child {
+      margin-bottom: 0;
+    }
+    
+    .acomp-remove {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: #d4a0a0;
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+    
+    .acomp-remove:hover {
+      background: #c08080;
+    }
+    
+    .acomp-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #5c6b4f;
+      margin-bottom: 14px;
+    }
+    
+    .btn-add {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: transparent;
+      border: 1.5px dashed #7a8c6a;
+      border-radius: 12px;
+      color: #5c6b4f;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 4px;
+    }
+    
+    .btn-add:hover {
+      background: rgba(122, 140, 106, 0.08);
+      border-color: #5c6b4f;
+    }
+    
+    /* Submit */
+    .btn-submit {
+      width: 100%;
+      padding: 18px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #5c6b4f, #7a8c6a);
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(92, 107, 79, 0.25);
+    }
+    
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(92, 107, 79, 0.35);
+    }
+    
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    /* No asiste */
+    .section-hidden {
+      display: none;
+    }
+    
+    /* Success */
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 60px 20px;
+    }
+    
+    .success-screen .check {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #5c6b4f, #7a8c6a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 2.5rem;
+      color: white;
+    }
+    
+    .success-screen h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      color: #5c6b4f;
+      margin-bottom: 12px;
+    }
+    
+    .success-screen p {
+      color: #6b6560;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .error-msg {
+      background: #fef2f2;
+      color: #b91c1c;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hero">
+    <p>Confirmación de asistencia</p>
+    <h1>Belen & David</h1>
+  </div>
+
+  <div class="container">
+    <form id="mainForm" onsubmit="handleSubmit(event)">
+
+      <!-- DATOS PERSONALES -->
+      <div class="card">
+        <div class="card-title">Tus datos</div>
+        
+        <div class="field">
+          <label>Nombre *</label>
+          <input type="text" id="nombre" required placeholder="Tu nombre">
+        </div>
+        
+        <div class="field">
+          <label>Apellidos *</label>
+          <input type="text" id="apellidos" required placeholder="Tus apellidos">
+        </div>
+      </div>
+
+      <!-- ASISTENCIA -->
+      <div class="card">
+        <div class="card-title">¿Podrás asistir?</div>
+        
+        <div class="field">
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" name="asistencia" id="asist_si" value="Sí" required onchange="toggleSections()">
+              <label for="asist_si">🎉 ¡Sí, allí estaré!</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="asistencia" id="asist_no" value="No" onchange="toggleSections()">
+              <label for="asist_no">😢 No podré ir</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIONES QUE SOLO SE MUESTRAN SI ASISTE -->
+      <div id="sections-si">
+
+        <!-- ACOMPAÑANTES -->
+        <div class="card">
+          <div class="card-title">Acompañantes</div>
+          <p style="font-size:0.88rem; color:#8a8580; margin-bottom:16px;">¿Vienes con alguien? Añade a tus acompañantes.</p>
+          
+          <div id="acompList" class="acomp-list"></div>
+          <button type="button" class="btn-add" onclick="addAcomp()">+ Añadir acompañante</button>
+        </div>
+
+        <!-- BUS -->
+        <div class="card">
+          <div class="card-title">Autobús</div>
+          
+          <div class="field">
+            <label>¿Necesitas autobús?</label>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" name="bus" id="bus_si" value="Sí">
+                <label for="bus_si">Sí, por favor</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" name="bus" id="bus_no" value="No" checked>
+                <label for="bus_no">No, gracias</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ALERGIAS -->
+        <div class="card">
+          <div class="card-title">Alergias y restricciones</div>
+          
+          <div class="field">
+            <label>¿Tienes alguna alergia o intolerancia?</label>
+            <input type="text" id="alergias" placeholder="Ej: Gluten, frutos secos...">
+          </div>
+          
+          <div class="field">
+            <label>Otras restricciones alimentarias</label>
+            <input type="text" id="restricciones" placeholder="Ej: Vegetariano, vegano...">
+          </div>
+        </div>
+
+        <!-- CANCIONES Y MENSAJE -->
+        <div class="card">
+          <div class="card-title">Un último detalle ✨</div>
+          
+          <div class="field">
+            <label>¿Qué canción no puede faltar en la fiesta?</label>
+            <input type="text" id="canciones" placeholder="Título - Artista">
+          </div>
+          
+          <div class="field">
+            <label>¿Quieres dejarnos un mensaje?</label>
+            <textarea id="mensaje" placeholder="Escribe aquí tu mensaje para los novios..."></textarea>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- MENSAJE SI NO ASISTE -->
+      <div id="sections-no" class="section-hidden">
+        <div class="card">
+          <div class="card-title">Te echaremos de menos 💔</div>
+          <div class="field">
+            <label>¿Quieres dejarnos un mensaje?</label>
+            <textarea id="mensajeNo" placeholder="Escribe aquí tu mensaje..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ERROR -->
+      <div id="errorMsg" class="error-msg"></div>
+
+      <!-- ENVIAR -->
+      <button type="submit" class="btn-submit" id="btnSubmit">
+        Confirmar asistencia
+      </button>
+
+    </form>
+
+    <!-- ÉXITO -->
+    <div id="successScreen" class="success-screen">
+      <div class="check">✓</div>
+      <h2>¡Gracias!</h2>
+      <p>Tu confirmación ha sido registrada correctamente.<br>¡Nos vemos pronto! 🎉</p>
+    </div>
+  </div>
+
+  <script>
+    let acompCount = 0;
+
+    function toggleSections() {
+      const asiste = document.getElementById('asist_si').checked;
+      document.getElementById('sections-si').style.display = asiste ? 'block' : 'none';
+      document.getElementById('sections-no').style.display = asiste ? 'none' : 'block';
+    }
+
+    // Inicialmente ocultar ambas secciones hasta que elija
+    document.getElementById('sections-si').style.display = 'none';
+    document.getElementById('sections-no').style.display = 'none';
+
+    function addAcomp() {
+      acompCount++;
+      const div = document.createElement('div');
+      div.className = 'acomp-card';
+      div.id = 'acomp_' + acompCount;
+      div.innerHTML = `
+        <button type="button" class="acomp-remove" onclick="removeAcomp(${acompCount})">×</button>
+        <div class="acomp-number">Acompañante ${acompCount}</div>
+        <div class="field">
+          <label>Nombre</label>
+          <input type="text" class="acomp-nombre" placeholder="Nombre del acompañante">
+        </div>
+        <div class="field">
+          <label>Apellidos</label>
+          <input type="text" class="acomp-apellidos" placeholder="Apellidos del acompañante">
+        </div>
+        <div class="field">
+          <label>Alergias o intolerancias</label>
+          <input type="text" class="acomp-alergias" placeholder="Ej: Lactosa...">
+        </div>
+      `;
+      document.getElementById('acompList').appendChild(div);
+      renumberAcomps();
+    }
+
+    function removeAcomp(id) {
+      const el = document.getElementById('acomp_' + id);
+      if (el) el.remove();
+      renumberAcomps();
+    }
+
+    function renumberAcomps() {
+      const cards = document.querySelectorAll('#acompList .acomp-card');
+      cards.forEach((card, i) => {
+        card.querySelector('.acomp-number').textContent = 'Acompañante ' + (i + 1);
+      });
+    }
+
+    function handleSubmit(e) {
+      e.preventDefault();
+
+      const btn = document.getElementById('btnSubmit');
+      const errorDiv = document.getElementById('errorMsg');
+      errorDiv.style.display = 'none';
+
+      const asistencia = document.querySelector('input[name="asistencia"]:checked');
+      if (!asistencia) {
+        errorDiv.textContent = 'Por favor, indica si podrás asistir.';
+        errorDiv.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>Enviando...';
+
+      const data = {
+        nombre: document.getElementById('nombre').value.trim(),
+        apellidos: document.getElementById('apellidos').value.trim(),
+        asistencia: asistencia.value,
+        bus: 'No',
+        alergias: '',
+        restricciones: '',
+        canciones: '',
+        mensaje: '',
+        acompanantes: []
+      };
+
+      if (asistencia.value === 'Sí') {
+        const busChecked = document.querySelector('input[name="bus"]:checked');
+        data.bus = busChecked ? busChecked.value : 'No';
+        data.alergias = document.getElementById('alergias').value.trim();
+        data.restricciones = document.getElementById('restricciones').value.trim();
+        data.canciones = document.getElementById('canciones').value.trim();
+        data.mensaje = document.getElementById('mensaje').value.trim();
+
+        // Recoger acompañantes
+        const cards = document.querySelectorAll('#acompList .acomp-card');
+        cards.forEach(card => {
+          const nombre = card.querySelector('.acomp-nombre').value.trim();
+          const apellidos = card.querySelector('.acomp-apellidos').value.trim();
+          const alergias = card.querySelector('.acomp-alergias').value.trim();
+          if (nombre || apellidos) {
+            data.acompanantes.push({ nombre, apellidos, alergias });
+          }
+        });
+      } else {
+        data.mensaje = document.getElementById('mensajeNo').value.trim();
+      }
+
+      google.script.run
+        .withSuccessHandler(function() {
+          document.getElementById('mainForm').style.display = 'none';
+          document.getElementById('successScreen').style.display = 'block';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        })
+        .withFailureHandler(function(err) {
+          btn.disabled = false;
+          btn.innerHTML = 'Confirmar asistencia';
+          errorDiv.textContent = 'Ha ocurrido un error. Por favor, inténtalo de nuevo.';
+          errorDiv.style.display = 'block';
+          console.error(err);
+        })
+        .submitForm(data);
+    }
+  </script>
+
+</body>
+</html>
