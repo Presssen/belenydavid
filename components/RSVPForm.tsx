@@ -27,7 +27,7 @@ type FormData = {
   message: string;
 };
 
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwWRZrdDXQbYP356FaP0r7qyprUQmQVtwH6wmcZpsggGCjJptdrG8AFMcWcrgWRWKdGUg/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzhcszOLYHIGkxfD0I7jNE7beoHkxDoWeNeXvwg3vZ2kQza9Dj9oBuOl_1u1lbgWk-4zg/exec';
 
 // Build dynamic step list from current form state
 function buildSteps(formData: FormData): string[] {
