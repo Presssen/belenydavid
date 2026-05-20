@@ -57,7 +57,7 @@ function doPost(e) {
     
     // ═══════════════════════════════════════════════
     // HOJA 1: "Formulario"
-    // Columna A: vacía | B: Asistencia | C: Nombre | D: Apellidos
+    // Columna A: Fecha/Hora | B: Asistencia | C: Nombre | D: Apellidos
     // E: Acompañante | F: Nombre acompañantes | G: Bus
     // H: Dirección | I: Piso | J: Código Postal | K: Ciudad
     // L: Alergias | M: Alergias-Quién | N: Restricciones
@@ -70,7 +70,7 @@ function doPost(e) {
     }
     if (sheetForm.getLastRow() === 0) {
       sheetForm.appendRow([
-        '', 'Asistencia', 'Nombre', 'Apellidos', 'Acompañante',
+        'Fecha/Hora', 'Asistencia', 'Nombre', 'Apellidos', 'Acompañante',
         'Nombre acompañantes', 'Bus', 'Dirección', 'Piso',
         'Código Postal', 'Ciudad', 'Alergias', 'Alergias - Quién',
         'Restricciones', 'Canciones', 'Mensaje'
@@ -78,10 +78,8 @@ function doPost(e) {
       sheetForm.getRange('1:1').setFontWeight('bold');
     }
     
-    // appendRow escribe desde columna A
-    // Ponemos '' en A para que los datos empiecen en B
     sheetForm.appendRow([
-      '',                      // A — vacío
+      new Date(),              // A — Fecha/Hora
       asistenciaSiNo,          // B — Asistencia
       firstName,               // C — Nombre
       lastName,                // D — Apellidos
