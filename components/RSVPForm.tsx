@@ -302,7 +302,7 @@ const removeCompanion = (idx: number) => {
             <input
               ref={inputRef}
               type="text"
-              autoComplete="off"
+              autoComplete="one-time-code"
               value={formData.firstName}
               onChange={e => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
               onKeyDown={e => e.key === 'Enter' && canGoNext() && goNext()}
@@ -364,7 +364,7 @@ const removeCompanion = (idx: number) => {
             <input
               ref={inputRef}
               type="text"
-              autoComplete="off"
+              autoComplete="one-time-code"
               value={formData.lastName}
               onChange={e => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
               onKeyDown={e => e.key === 'Enter' && canGoNext() && goNext()}
@@ -434,7 +434,7 @@ const removeCompanion = (idx: number) => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input
                       type="text"
-                      autoComplete="off"
+                      autoComplete="one-time-code"
                       value={companion.firstName}
                       onChange={e => updateCompanion(idx, 'firstName', e.target.value)}
                       placeholder="Nombre"
@@ -442,7 +442,7 @@ const removeCompanion = (idx: number) => {
                     />
                     <input
                       type="text"
-                      autoComplete="off"
+                      autoComplete="one-time-code"
                       value={companion.lastName}
                       onChange={e => updateCompanion(idx, 'lastName', e.target.value)}
                       placeholder="Apellidos"
@@ -501,7 +501,7 @@ const removeCompanion = (idx: number) => {
                 <input
                   ref={inputRef}
                   type="text"
-                  autoComplete="off"
+                  autoComplete="one-time-code"
                   value={formData.addressStreet}
                   onChange={e => setFormData(prev => ({ ...prev, addressStreet: e.target.value }))}
                   placeholder="Ej. Calle Mayor, 12"
@@ -512,7 +512,7 @@ const removeCompanion = (idx: number) => {
                 <label className="block text-sm font-semibold text-wedding-600 mb-1.5">Piso / Puerta</label>
                 <input
                   type="text"
-                  autoComplete="off"
+                  autoComplete="one-time-code"
                   value={formData.addressFloor}
                   onChange={e => setFormData(prev => ({ ...prev, addressFloor: e.target.value }))}
                   placeholder="Ej. 3ºA (opcional)"
@@ -524,7 +524,7 @@ const removeCompanion = (idx: number) => {
                   <label className="block text-sm font-semibold text-wedding-600 mb-1.5">Código Postal *</label>
                   <input
                     type="text"
-                    autoComplete="off"
+                    autoComplete="one-time-code"
                     value={formData.addressPostalCode}
                     onChange={e => setFormData(prev => ({ ...prev, addressPostalCode: e.target.value }))}
                     placeholder="Ej. 28001"
@@ -535,7 +535,7 @@ const removeCompanion = (idx: number) => {
                   <label className="block text-sm font-semibold text-wedding-600 mb-1.5">Ciudad *</label>
                   <input
                     type="text"
-                    autoComplete="off"
+                    autoComplete="one-time-code"
                     value={formData.addressCity}
                     onChange={e => setFormData(prev => ({ ...prev, addressCity: e.target.value }))}
                     placeholder="Ej. Madrid"
@@ -591,7 +591,7 @@ const removeCompanion = (idx: number) => {
             <input
               ref={inputRef}
               type="text"
-              autoComplete="off"
+              autoComplete="one-time-code"
               value={formData.dietaryRestrictions}
               onChange={e => setFormData(prev => ({ ...prev, dietaryRestrictions: e.target.value }))}
               onKeyDown={e => e.key === 'Enter' && goNext()}
@@ -615,7 +615,7 @@ const removeCompanion = (idx: number) => {
                   <input
                     ref={idx === 0 ? inputRef : undefined}
                     type="text"
-                    autoComplete="off"
+                    autoComplete="one-time-code"
                     value={song}
                     onChange={e => {
                       const songs = [...formData.songs];
@@ -669,7 +669,7 @@ const removeCompanion = (idx: number) => {
             </h2>
             <p className="text-wedding-500 mb-8">Totalmente opcional. ¡Nos encantará leerlo!</p>
             <textarea
-              autoComplete="off"
+              autoComplete="one-time-code"
               value={formData.message}
               onChange={e => setFormData(prev => ({ ...prev, message: e.target.value }))}
               rows={4}
