@@ -17,17 +17,6 @@ function doPost(e) {
     var p = e.parameter;
     
     // ─────────────────────────────────────
-    // LOGGING: Guardar datos crudos en hoja "Log" para verificar
-    // ─────────────────────────────────────
-    var logSheet = ss.getSheetByName('Log');
-    if (!logSheet) {
-      logSheet = ss.insertSheet('Log');
-      logSheet.appendRow(['Timestamp', 'Datos recibidos']);
-      logSheet.getRange('1:1').setFontWeight('bold');
-    }
-    logSheet.appendRow([new Date(), JSON.stringify(p)]);
-    
-    // ─────────────────────────────────────
     // LEER PARÁMETROS
     // ─────────────────────────────────────
     var attending            = p.attending || '';
@@ -57,18 +46,10 @@ function doPost(e) {
     
     // ═══════════════════════════════════════════════
     // HOJA 1: "Formulario"
-    // Columna A: Fecha/Hora | B: Asistencia | C: Nombre | D: Apellidos
-    // E: Acompañante | F: Nombre acompañantes | G: Bus
-    // H: Dirección | I: Piso | J: Código Postal | K: Ciudad
-    // L: Alergias | M: Alergias-Quién | N: Restricciones
-    // O: Canciones | P: Mensaje
     // ═══════════════════════════════════════════════
-    
-    var sheetForm = ss.getSheetByName('Formulario');
-    if (!sheetForm) {
-      sheetForm = ss.insertSheet('Formulario');
-    }
-    if (sheetForm.getLastRow() === 0) {
+    var sheetForm = ss.getSheetByName('Formulario') || ss.insertSheet('Formulario');
+    var lastRowForm = sheetForm.getLastRow();
+    if (lastRowForm === 0) {
       sheetForm.appendRow([
         'Fecha/Hora', 'Asistencia', 'Nombre', 'Apellidos', 'Acompañante',
         'Nombre acompañantes', 'Bus', 'Dirección', 'Piso',
@@ -76,9 +57,10 @@ function doPost(e) {
         'Restricciones', 'Canciones', 'Mensaje'
       ]);
       sheetForm.getRange('1:1').setFontWeight('bold');
+      lastRowForm = 1;
     }
     
-    sheetForm.appendRow([
+    var rowFormValue = [
       new Date(),              // A — Fecha/Hora
       asistenciaSiNo,          // B — Asistencia
       firstName,               // C — Nombre
@@ -95,23 +77,18 @@ function doPost(e) {
       hasDietary,              // N — Restricciones (Sí/No)
       songSuggestion,          // O — Canciones
       message                  // P — Mensaje
-    ]);
-    
+    ];
+    sheetForm.getRange(lastRowForm + 1, 1, 1, 16).setValues([rowFormValue]);
     
     // ═══════════════════════════════════════════════
     // HOJA 2: "Personas"
-    // Columna A: vacía | B: Nombre completo | C: Asistencia
-    // D: Bus | E: Dirección | F: Alergias
-    // Una fila por persona, acompañantes en filas separadas
     // ═══════════════════════════════════════════════
-    
-    var sheetPersonas = ss.getSheetByName('Personas');
-    if (!sheetPersonas) {
-      sheetPersonas = ss.insertSheet('Personas');
-    }
-    if (sheetPersonas.getLastRow() === 0) {
+    var sheetPersonas = ss.getSheetByName('Personas') || ss.insertSheet('Personas');
+    var lastRowPersonas = sheetPersonas.getLastRow();
+    if (lastRowPersonas === 0) {
       sheetPersonas.appendRow(['', 'Nombre', 'Asistencia', 'Bus', 'Dirección', 'Alergias']);
       sheetPersonas.getRange('1:1').setFontWeight('bold');
+      lastRowPersonas = 1;
     }
     
     // Determinar alergias por persona
@@ -132,8 +109,10 @@ function doPost(e) {
       }
     }
     
+    var personasRows = [];
+    
     // Fila del invitado principal
-    sheetPersonas.appendRow([
+    personasRows.push([
       '',                                  // A — vacío
       firstName + ' ' + lastName,          // B — Nombre completo
       asistenciaSiNo,                      // C — Asistencia
@@ -148,7 +127,7 @@ function doPost(e) {
       for (var i = 0; i < listaAcomp.length; i++) {
         var nombreAcomp = listaAcomp[i].trim();
         if (nombreAcomp !== '') {
-          sheetPersonas.appendRow([
+          personasRows.push([
             '',                            // A — vacío
             nombreAcomp,                   // B — Nombre completo
             asistenciaSiNo,                // C — Asistencia
@@ -160,6 +139,9 @@ function doPost(e) {
       }
     }
     
+    // Escribir todas las filas en lote
+    sheetPersonas.getRange(lastRowPersonas + 1, 1, personasRows.length, 6).setValues(personasRows);
+    
     lock.releaseLock();
     
     return ContentService
@@ -167,13 +149,20 @@ function doPost(e) {
       .setMimeType(ContentService.MimeType.JSON);
       
   } catch (error) {
-    // Loguear el error también
+    // Loguear el error también en caso de falla
     try {
       var ss2 = SpreadsheetApp.getActiveSpreadsheet();
-      var logSheet2 = ss2.getSheetByName('Log');
-      if (logSheet2) {
-        logSheet2.appendRow([new Date(), 'ERROR: ' + error.toString()]);
+      var logSheet2 = ss2.getSheetByName('Log') || ss2.insertSheet('Log');
+      var lastRowLog = logSheet2.getLastRow();
+      if (lastRowLog === 0) {
+        logSheet2.appendRow(['Timestamp', 'Datos recibidos / Error']);
+        logSheet2.getRange('1:1').setFontWeight('bold');
+        lastRowLog = 1;
       }
+      logSheet2.getRange(lastRowLog + 1, 1, 1, 2).setValues([[
+        new Date(),
+        'ERROR: ' + error.toString() + ' | Params: ' + JSON.stringify(e.parameter)
+      ]]);
     } catch(e2) {}
     
     lock.releaseLock();

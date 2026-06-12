@@ -176,12 +176,21 @@ export const RSVPForm: React.FC<RSVPFormProps> = ({ guestName, onNavigate }) => 
       });
 
       console.log('📋 Datos que se envían a Google Sheets:', Object.fromEntries(params));
-      await fetch(GOOGLE_SCRIPT_URL, {
+      
+      const fetchPromise = fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: params.toString()
       });
+
+      // Esperamos el envío real, pero si tarda más de 800ms pasamos a la pantalla de éxito.
+      // Esto proporciona una experiencia instantánea al usuario sin comprometer el envío,
+      // ya que la petición sigue ejecutándose en segundo plano en el navegador.
+      await Promise.race([
+        fetchPromise,
+        new Promise(resolve => setTimeout(resolve, 800))
+      ]);
 
       setStatus('success');
     } catch (error) {
