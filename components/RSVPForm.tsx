@@ -126,10 +126,12 @@ export const RSVPForm: React.FC<RSVPFormProps> = ({ guestName, onNavigate }) => 
   };
 
   const goNext = () => {
+    if (animating) return;
     if (step < totalSteps - 1) animateTo(step + 1, 'forward');
   };
 
   const goBack = () => {
+    if (animating) return;
     if (step > 0) animateTo(step - 1, 'back');
     else onNavigate('home');
   };
@@ -181,7 +183,8 @@ export const RSVPForm: React.FC<RSVPFormProps> = ({ guestName, onNavigate }) => 
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: params.toString()
+        body: params.toString(),
+        keepalive: true
       });
 
       // Esperamos el envío real, pero si tarda más de 800ms pasamos a la pantalla de éxito.
@@ -237,6 +240,97 @@ const removeCompanion = (idx: number) => {
           >
             Volver al inicio
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ─── ERROR / FALLBACK SCREEN ─────────────────────────────────────
+  if (status === 'error') {
+    const getWhatsAppText = () => {
+      const attendingText = formData.attending === 'yes' ? 'Sí, asistiré' : 'No podré asistir';
+      const companionsList = formData.hasCompanion === 'yes'
+        ? formData.companions.map((c, i) => `${i + 1}. ${c.firstName} ${c.lastName}`).join(', ')
+        : 'Ninguno';
+      
+      const busText = { yes: 'Sí', no: 'No', maybe: 'Por ver' }[formData.busNeeded] ?? formData.busNeeded;
+      const addressText = formData.attending === 'yes'
+        ? `${formData.addressStreet}${formData.addressFloor ? `, ${formData.addressFloor}` : ''}, ${formData.addressPostalCode} ${formData.addressCity}`
+        : 'No aplica';
+      
+      const dietaryText = formData.hasDietary === 'yes'
+        ? `Sí (${{ main: 'Yo', companion: 'Mi acompañante', both: 'Ambos' }[formData.dietaryWho] ?? formData.dietaryWho}): ${formData.dietaryRestrictions}`
+        : 'No';
+      
+      const songsText = formData.songs.filter(s => s.trim()).join(' / ') || 'Ninguna';
+      const messageText = formData.message.trim() || 'Sin mensaje';
+
+      return `¡Hola! No he podido guardar mi confirmación en la web, así que os paso mis datos por aquí:\n\n` +
+        `• *Asistencia:* ${attendingText}\n` +
+        `• *Nombre:* ${formData.firstName} ${formData.lastName}\n` +
+        `• *Acompañantes:* ${companionsList}\n` +
+        `• *Autobús:* ${busText}\n` +
+        `• *Dirección:* ${addressText}\n` +
+        `• *Alergias:* ${dietaryText}\n` +
+        `• *Canción:* ${songsText}\n` +
+        `• *Mensaje:* ${messageText}`;
+    };
+
+    const waText = encodeURIComponent(getWhatsAppText());
+    const waDavid = `https://wa.me/34676382167?text=${waText}`;
+    const waBelen = `https://wa.me/34645442995?text=${waText}`;
+
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-wedding-50 to-white flex items-center justify-center px-4 py-8">
+        <div className="bg-white max-w-lg w-full rounded-3xl p-8 md:p-10 text-center shadow-2xl border border-red-100 animate-fade-in-up">
+          <div className="w-20 h-20 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-amber-100">
+            <AlertCircle size={40} className="mx-auto" />
+          </div>
+          <h2 className="font-serif text-3xl text-wedding-900 mb-3">Envío Automático Bloqueado</h2>
+          <p className="text-wedding-600 mb-6 leading-relaxed text-sm">
+            Tu navegador, la red o un bloqueador de publicidad ha impedido el guardado automático de tus respuestas.
+            <strong> ¡No te preocupes!</strong> Puedes enviarnos tu confirmación directamente por WhatsApp con un solo clic:
+          </p>
+          
+          <div className="flex flex-col gap-3 mb-8">
+            <a
+              href={waBelen}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center justify-center gap-3 px-6 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-semibold shadow-md transition-all active:scale-[0.98]"
+            >
+              <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.864-9.864.002-2.637-1.01-5.115-2.85-6.958-1.84-1.844-4.286-2.86-6.93-2.861-5.438 0-9.863 4.42-9.867 9.863-.001 1.73.457 3.41 1.32 4.908l-.989 3.607 3.692-.969zm10.743-7.502c-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.15-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.568-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347z"/>
+              </svg>
+              Enviar a Belén
+            </a>
+            <a
+              href={waDavid}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center justify-center gap-3 px-6 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-semibold shadow-md transition-all active:scale-[0.98]"
+            >
+              <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.864-9.864.002-2.637-1.01-5.115-2.85-6.958-1.84-1.844-4.286-2.86-6.93-2.861-5.438 0-9.863 4.42-9.867 9.863-.001 1.73.457 3.41 1.32 4.908l-.989 3.607 3.692-.969zm10.743-7.502c-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.15-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.568-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347z"/>
+              </svg>
+              Enviar a David
+            </a>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button
+              onClick={() => setStatus('idle')}
+              className="px-6 py-3 border border-wedding-200 text-wedding-700 rounded-xl font-medium hover:bg-wedding-50 transition-all text-sm"
+            >
+              Volver e intentar de nuevo
+            </button>
+            <button
+              onClick={() => onNavigate('home')}
+              className="px-6 py-3 bg-wedding-900 text-white rounded-xl font-medium hover:bg-wedding-800 transition-all text-sm shadow-sm"
+            >
+              Ir al inicio
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -311,7 +405,7 @@ const removeCompanion = (idx: number) => {
             <input
               ref={inputRef}
               type="text"
-              autoComplete="one-time-code"
+              autoComplete="given-name"
               value={formData.firstName}
               onChange={e => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
               onKeyDown={e => e.key === 'Enter' && canGoNext() && goNext()}
@@ -373,7 +467,7 @@ const removeCompanion = (idx: number) => {
             <input
               ref={inputRef}
               type="text"
-              autoComplete="one-time-code"
+              autoComplete="family-name"
               value={formData.lastName}
               onChange={e => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
               onKeyDown={e => e.key === 'Enter' && canGoNext() && goNext()}
@@ -443,7 +537,7 @@ const removeCompanion = (idx: number) => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input
                       type="text"
-                      autoComplete="one-time-code"
+                      autoComplete="off"
                       value={companion.firstName}
                       onChange={e => updateCompanion(idx, 'firstName', e.target.value)}
                       placeholder="Nombre"
@@ -451,7 +545,7 @@ const removeCompanion = (idx: number) => {
                     />
                     <input
                       type="text"
-                      autoComplete="one-time-code"
+                      autoComplete="off"
                       value={companion.lastName}
                       onChange={e => updateCompanion(idx, 'lastName', e.target.value)}
                       placeholder="Apellidos"
@@ -510,7 +604,7 @@ const removeCompanion = (idx: number) => {
                 <input
                   ref={inputRef}
                   type="text"
-                  autoComplete="one-time-code"
+                  autoComplete="street-address"
                   value={formData.addressStreet}
                   onChange={e => setFormData(prev => ({ ...prev, addressStreet: e.target.value }))}
                   placeholder="Ej. Calle Mayor, 12"
@@ -521,7 +615,7 @@ const removeCompanion = (idx: number) => {
                 <label className="block text-sm font-semibold text-wedding-600 mb-1.5">Piso / Puerta</label>
                 <input
                   type="text"
-                  autoComplete="one-time-code"
+                  autoComplete="off"
                   value={formData.addressFloor}
                   onChange={e => setFormData(prev => ({ ...prev, addressFloor: e.target.value }))}
                   placeholder="Ej. 3ºA (opcional)"
@@ -533,7 +627,7 @@ const removeCompanion = (idx: number) => {
                   <label className="block text-sm font-semibold text-wedding-600 mb-1.5">Código Postal *</label>
                   <input
                     type="text"
-                    autoComplete="one-time-code"
+                    autoComplete="postal-code"
                     value={formData.addressPostalCode}
                     onChange={e => setFormData(prev => ({ ...prev, addressPostalCode: e.target.value }))}
                     placeholder="Ej. 28001"
@@ -544,7 +638,7 @@ const removeCompanion = (idx: number) => {
                   <label className="block text-sm font-semibold text-wedding-600 mb-1.5">Ciudad *</label>
                   <input
                     type="text"
-                    autoComplete="one-time-code"
+                    autoComplete="address-level2"
                     value={formData.addressCity}
                     onChange={e => setFormData(prev => ({ ...prev, addressCity: e.target.value }))}
                     placeholder="Ej. Madrid"
@@ -600,7 +694,7 @@ const removeCompanion = (idx: number) => {
             <input
               ref={inputRef}
               type="text"
-              autoComplete="one-time-code"
+              autoComplete="off"
               value={formData.dietaryRestrictions}
               onChange={e => setFormData(prev => ({ ...prev, dietaryRestrictions: e.target.value }))}
               onKeyDown={e => e.key === 'Enter' && goNext()}
@@ -624,7 +718,7 @@ const removeCompanion = (idx: number) => {
                   <input
                     ref={idx === 0 ? inputRef : undefined}
                     type="text"
-                    autoComplete="one-time-code"
+                    autoComplete="off"
                     value={song}
                     onChange={e => {
                       const songs = [...formData.songs];
@@ -678,7 +772,7 @@ const removeCompanion = (idx: number) => {
             </h2>
             <p className="text-wedding-500 mb-8">Totalmente opcional. ¡Nos encantará leerlo!</p>
             <textarea
-              autoComplete="one-time-code"
+              autoComplete="off"
               value={formData.message}
               onChange={e => setFormData(prev => ({ ...prev, message: e.target.value }))}
               rows={4}

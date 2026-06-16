@@ -21,11 +21,15 @@ const App: React.FC = () => {
   const [isNameSet, setIsNameSet] = useState(false);
 
   useEffect(() => {
-    // Check if name exists in localStorage
-    const savedName = localStorage.getItem('wedding_guest_name');
-    if (savedName) {
-      setGuestName(savedName);
-      setIsNameSet(true);
+    // Check if name exists in localStorage safely
+    try {
+      const savedName = localStorage.getItem('wedding_guest_name');
+      if (savedName) {
+        setGuestName(savedName);
+        setIsNameSet(true);
+      }
+    } catch (e) {
+      console.warn('localStorage is disabled or blocked:', e);
     }
 
     // Additional event listeners for protection
@@ -44,20 +48,32 @@ const App: React.FC = () => {
   }, []);
 
   const handleNameSubmit = (name: string) => {
-    localStorage.setItem('wedding_guest_name', name);
+    try {
+      localStorage.setItem('wedding_guest_name', name);
+    } catch (e) {
+      console.warn('localStorage is disabled or blocked:', e);
+    }
     setGuestName(name);
     setIsNameSet(true);
   };
 
   const handleResetName = () => {
-    localStorage.removeItem('wedding_guest_name');
+    try {
+      localStorage.removeItem('wedding_guest_name');
+    } catch (e) {
+      console.warn('localStorage is disabled or blocked:', e);
+    }
     setGuestName('');
     setIsNameSet(false);
     window.scrollTo(0, 0);
   };
 
-  // Prevent default context menu (Right Click)
+  // Prevent default context menu (Right Click) except on inputs/textareas for usability
   const handleContextMenu = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
+      return;
+    }
     e.preventDefault();
   };
 
